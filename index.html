@@ -1,611 +1,1274 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 
-    <title>⚡ 极速点击 - 30秒挑战</title>
+<title>💕 若兰</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                "Microsoft YaHei",
-                Arial,
-                sans-serif;
+body{
+    margin:0;
+    min-height:100vh;
+    overflow:hidden;
+    font-family:
+        "Microsoft YaHei",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
-            background:
-                radial-gradient(circle at top left, #4f46e5, transparent 40%),
-                radial-gradient(circle at bottom right, #06b6d4, transparent 40%),
-                #111827;
+    background:
+        radial-gradient(circle at 20% 20%,#ff9a9e 0%,transparent 35%),
+        radial-gradient(circle at 80% 80%,#fad0c4 0%,transparent 35%),
+        linear-gradient(135deg,#ff758c,#ff7eb3);
 
-            color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+.game{
+    width:min(95vw,900px);
+    height:min(92vh,700px);
 
-            padding: 20px;
-        }
+    background:rgba(255,255,255,.18);
 
-        .game-card {
-            width: 100%;
-            max-width: 600px;
+    border:1px solid rgba(255,255,255,.35);
 
-            padding: 30px;
+    border-radius:30px;
 
-            border-radius: 28px;
+    backdrop-filter:blur(18px);
 
-            background: rgba(255, 255, 255, 0.12);
+    box-shadow:
+        0 25px 80px rgba(100,0,40,.35);
 
-            border: 1px solid rgba(255, 255, 255, 0.2);
+    padding:20px;
 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+    text-align:center;
+}
 
-            box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.35);
+h1{
+    margin:0;
 
-            text-align: center;
-        }
+    color:white;
 
-        h1 {
-            margin: 0;
+    font-size:42px;
 
-            font-size: 38px;
+    text-shadow:
+        0 4px 15px rgba(100,0,40,.25);
+}
 
-            font-weight: 800;
+.subtitle{
+    color:rgba(255,255,255,.9);
 
-            letter-spacing: 1px;
-        }
+    margin:5px 0 15px;
 
-        .subtitle {
-            margin-top: 8px;
+    font-size:15px;
+}
 
-            color: rgba(255, 255, 255, 0.75);
+#gameArea{
+    position:relative;
 
-            font-size: 15px;
-        }
+    width:100%;
 
-        .stats {
-            display: grid;
+    height:calc(100% - 150px);
 
-            grid-template-columns: 1fr 1fr 1fr;
+    min-height:400px;
 
-            gap: 12px;
+    border-radius:24px;
 
-            margin-top: 25px;
-        }
+    overflow:hidden;
 
-        .stat {
-            background: rgba(0, 0, 0, 0.18);
+    background:
+        linear-gradient(
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.04)
+        );
 
-            border-radius: 16px;
+    border:2px solid rgba(255,255,255,.3);
+}
 
-            padding: 14px 8px;
-        }
+/* 草地 */
 
-        .stat-label {
-            font-size: 13px;
+.ground{
+    position:absolute;
 
-            color: rgba(255, 255, 255, 0.65);
-        }
+    left:0;
+    right:0;
+    bottom:0;
 
-        .stat-value {
-            margin-top: 5px;
+    height:28%;
 
-            font-size: 28px;
+    background:
+        linear-gradient(
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.02)
+        );
 
-            font-weight: 800;
-        }
+    border-top:2px solid rgba(255,255,255,.15);
+}
 
-        #arena {
-            position: relative;
+/* 人物 */
 
-            width: 100%;
+.character{
+    position:absolute;
 
-            height: 320px;
+    width:70px;
+    height:95px;
 
-            margin-top: 22px;
+    z-index:5;
 
-            border-radius: 20px;
+    transition:
+        left .08s linear,
+        top .08s linear;
 
-            border: 2px dashed rgba(255, 255, 255, 0.3);
+    user-select:none;
 
-            background: rgba(0, 0, 0, 0.12);
+    pointer-events:none;
+}
 
-            overflow: hidden;
+/* 头 */
 
-            user-select: none;
+.head{
+    position:absolute;
 
-            touch-action: manipulation;
-        }
+    width:42px;
+    height:42px;
 
-        #message {
-            position: absolute;
+    border-radius:50%;
 
-            left: 50%;
-            top: 50%;
+    left:14px;
+    top:0;
 
-            transform: translate(-50%, -50%);
+    background:#ffd1b3;
 
-            width: 90%;
+    border:2px solid rgba(0,0,0,.12);
+}
 
-            color: rgba(255, 255, 255, 0.75);
+/* 眼睛 */
 
-            font-size: 17px;
+.eye{
+    position:absolute;
 
-            pointer-events: none;
-        }
+    width:5px;
+    height:7px;
 
-        #target {
-            position: absolute;
+    border-radius:50%;
 
-            width: 70px;
-            height: 70px;
+    background:#333;
 
-            border: none;
+    top:15px;
+}
 
-            border-radius: 50%;
+.eye.left{
+    left:9px;
+}
 
-            background:
-                radial-gradient(
-                    circle at 35% 30%,
-                    #ffffff,
-                    #facc15 25%,
-                    #f97316 65%,
-                    #ef4444
-                );
+.eye.right{
+    right:9px;
+}
 
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.35),
-                0 0 25px rgba(250, 204, 21, 0.45);
+/* 嘴 */
 
-            cursor: pointer;
+.mouth{
+    position:absolute;
 
-            display: none;
+    width:14px;
+    height:7px;
 
-            transform: scale(1);
+    border-bottom:2px solid #d85b6a;
 
-            transition:
-                left 0.08s,
-                top 0.08s,
-                transform 0.08s;
-        }
+    border-radius:50%;
 
-        #target:hover {
-            transform: scale(1.08);
-        }
+    left:12px;
+    bottom:7px;
+}
 
-        #target:active {
-            transform: scale(0.9);
-        }
+/* 身体 */
 
-        #startBtn {
-            margin-top: 22px;
+.body{
+    position:absolute;
 
-            width: 100%;
+    width:48px;
+    height:43px;
 
-            padding: 15px 20px;
+    left:11px;
+    top:39px;
 
-            border: none;
+    border-radius:18px 18px 12px 12px;
+}
 
-            border-radius: 15px;
+/* 手 */
 
-            background: white;
+.arm{
+    position:absolute;
 
-            color: #111827;
+    width:12px;
+    height:35px;
 
-            font-size: 18px;
+    border-radius:10px;
 
-            font-weight: 800;
+    top:43px;
+}
 
-            cursor: pointer;
+.arm.left{
+    left:2px;
 
-            transition:
-                transform 0.15s,
-                box-shadow 0.15s;
-        }
+    transform:rotate(15deg);
+}
 
-        #startBtn:hover {
-            transform: translateY(-2px);
+.arm.right{
+    right:2px;
 
-            box-shadow:
-                0 10px 25px rgba(0, 0, 0, 0.25);
-        }
+    transform:rotate(-15deg);
+}
 
-        #startBtn:active {
-            transform: translateY(0);
-        }
+/* 腿 */
 
-        #startBtn:disabled {
-            opacity: 0.65;
+.leg{
+    position:absolute;
 
-            cursor: not-allowed;
+    width:13px;
+    height:25px;
 
-            transform: none;
-        }
+    border-radius:10px;
 
-        .tips {
-            margin-top: 18px;
+    top:75px;
+}
 
-            color: rgba(255, 255, 255, 0.55);
+.leg.left{
+    left:18px;
 
-            font-size: 13px;
+    transform:rotate(5deg);
+}
 
-            line-height: 1.6;
-        }
+.leg.right{
+    right:18px;
 
-        .result {
-            margin-top: 12px;
+    transform:rotate(-5deg);
+}
 
-            min-height: 25px;
+/* 帅哥 */
 
-            font-size: 16px;
+.boy .body,
+.boy .arm,
+.boy .leg{
+    background:#3b82f6;
+}
 
-            font-weight: 700;
-        }
+.boy .head{
+    box-shadow:
+        inset 0 8px 0 #333;
+}
 
-        @media (max-width: 600px) {
+/* 美女 */
 
-            body {
-                padding: 12px;
-            }
+.girl .body,
+.girl .arm,
+.girl .leg{
+    background:#f472b6;
+}
 
-            .game-card {
-                padding: 22px 16px;
+.girl .head{
+    box-shadow:
+        inset 0 8px 0 #54263a;
+}
 
-                border-radius: 22px;
-            }
+/* 美女裙子 */
 
-            h1 {
-                font-size: 30px;
-            }
+.girl .body{
+    width:55px;
+    height:45px;
 
-            #arena {
-                height: 360px;
-            }
+    left:8px;
 
-            #target {
-                width: 64px;
-                height: 64px;
-            }
+    border-radius:15px 15px 25px 25px;
+}
 
-            .stat-value {
-                font-size: 24px;
-            }
-        }
-    </style>
+/* 名字 */
+
+.name{
+    position:absolute;
+
+    top:-28px;
+
+    width:100px;
+
+    left:-15px;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.4);
+}
+
+/* 爱心 */
+
+.heart{
+    position:absolute;
+
+    font-size:28px;
+
+    pointer-events:none;
+
+    z-index:20;
+
+    animation:
+        heartFly 2.2s ease-out forwards;
+}
+
+@keyframes heartFly{
+
+    0%{
+        opacity:1;
+
+        transform:
+            translate(0,0)
+            scale(.5)
+            rotate(0deg);
+    }
+
+    50%{
+        opacity:1;
+
+        transform:
+            translate(
+                calc((var(--x))*1px),
+                -100px
+            )
+            scale(1.3)
+            rotate(15deg);
+    }
+
+    100%{
+        opacity:0;
+
+        transform:
+            translate(
+                calc((var(--x))*1px),
+                -240px
+            )
+            scale(.8)
+            rotate(-20deg);
+    }
+}
+
+/* 爱你若兰 */
+
+.loveMessage{
+    position:absolute;
+
+    left:50%;
+    top:45%;
+
+    transform:
+        translate(-50%,-50%)
+        scale(0);
+
+    z-index:30;
+
+    color:white;
+
+    font-size:clamp(35px,8vw,72px);
+
+    font-weight:900;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 5px 20px rgba(160,0,50,.6),
+        0 0 25px rgba(255,255,255,.7);
+
+    opacity:0;
+}
+
+.loveMessage.show{
+    animation:
+        loveShow 3s ease forwards;
+}
+
+@keyframes loveShow{
+
+    0%{
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(.2);
+    }
+
+    25%{
+        opacity:1;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1.2);
+    }
+
+    45%{
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+
+    85%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0;
+
+        transform:
+            translate(-50%,-50%)
+            scale(1.1);
+    }
+}
+
+/* 开始按钮 */
+
+#startBtn{
+    margin-top:15px;
+
+    padding:13px 35px;
+
+    border:0;
+
+    border-radius:30px;
+
+    background:white;
+
+    color:#ec4899;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.2);
+}
+
+#startBtn:active{
+    transform:scale(.96);
+}
+
+/* 手机方向键 */
+
+.controls{
+    position:absolute;
+
+    left:50%;
+
+    bottom:15px;
+
+    transform:translateX(-50%);
+
+    width:170px;
+
+    height:125px;
+
+    z-index:50;
+
+    display:none;
+}
+
+.control{
+    position:absolute;
+
+    width:52px;
+    height:52px;
+
+    border:0;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,.8);
+
+    color:#ec4899;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,.2);
+
+    touch-action:none;
+}
+
+.up{
+    left:59px;
+    top:0;
+}
+
+.down{
+    left:59px;
+    bottom:0;
+}
+
+.left{
+    left:0;
+    top:59px;
+}
+
+.right{
+    right:0;
+    top:59px;
+}
+
+.tip{
+    position:absolute;
+
+    left:50%;
+
+    bottom:15px;
+
+    transform:translateX(-50%);
+
+    color:rgba(255,255,255,.7);
+
+    font-size:13px;
+
+    z-index:2;
+}
+
+@media(max-width:700px){
+
+    .game{
+        width:96vw;
+        height:94vh;
+
+        padding:12px;
+
+        border-radius:22px;
+    }
+
+    h1{
+        font-size:32px;
+    }
+
+    .subtitle{
+        margin-bottom:8px;
+    }
+
+    #gameArea{
+        height:calc(100% - 105px);
+
+        min-height:420px;
+    }
+
+    .controls{
+        display:block;
+    }
+
+    .tip{
+        display:none;
+    }
+
+    #startBtn{
+        margin-top:8px;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div class="game-card">
+<div class="game">
 
-    <h1>⚡ 极速点击</h1>
+    <h1>💕 若兰</h1>
 
     <div class="subtitle">
-        30 秒内尽可能多地点中目标！
+        爱，就要勇敢追上她 ❤️
     </div>
 
 
-    <div class="stats">
+    <div id="gameArea">
 
-        <div class="stat">
-            <div class="stat-label">得分</div>
-            <div class="stat-value" id="score">0</div>
+        <div class="ground"></div>
+
+
+        <!-- 帅哥 -->
+
+        <div
+            id="boy"
+            class="character boy"
+            style="left:40px;top:80px;"
+        >
+
+            <div class="name">
+                帅哥
+            </div>
+
+            <div class="head">
+
+                <div class="eye left"></div>
+
+                <div class="eye right"></div>
+
+                <div class="mouth"></div>
+
+            </div>
+
+            <div class="body"></div>
+
+            <div class="arm left"></div>
+
+            <div class="arm right"></div>
+
+            <div class="leg left"></div>
+
+            <div class="leg right"></div>
+
         </div>
 
-        <div class="stat">
-            <div class="stat-label">剩余时间</div>
-            <div class="stat-value" id="time">30</div>
+
+        <!-- 美女 -->
+
+        <div
+            id="girl"
+            class="character girl"
+            style="left:400px;top:200px;"
+        >
+
+            <div class="name">
+                若兰 ❤️
+            </div>
+
+            <div class="head">
+
+                <div class="eye left"></div>
+
+                <div class="eye right"></div>
+
+                <div class="mouth"></div>
+
+            </div>
+
+            <div class="body"></div>
+
+            <div class="arm left"></div>
+
+            <div class="arm right"></div>
+
+            <div class="leg left"></div>
+
+            <div class="leg right"></div>
+
         </div>
 
-        <div class="stat">
-            <div class="stat-label">最高分</div>
-            <div class="stat-value" id="best">0</div>
+
+        <!-- 爱心文字 -->
+
+        <div
+            id="loveMessage"
+            class="loveMessage"
+        >
+            ❤️ 爱你若兰 ❤️
         </div>
 
-    </div>
 
+        <!-- 手机控制 -->
 
-    <div id="arena">
+        <div class="controls">
 
-        <div id="message">
-            点击下面的按钮开始游戏
+            <button
+                class="control up"
+                data-key="up"
+            >
+                ▲
+            </button>
+
+            <button
+                class="control down"
+                data-key="down"
+            >
+                ▼
+            </button>
+
+            <button
+                class="control left"
+                data-key="left"
+            >
+                ◀
+            </button>
+
+            <button
+                class="control right"
+                data-key="right"
+            >
+                ▶
+            </button>
+
         </div>
 
-        <button id="target">
-            🎯
-        </button>
+
+        <div class="tip">
+            电脑：使用 WASD 或方向键追逐若兰
+        </div>
 
     </div>
 
 
     <button id="startBtn">
-        开始游戏
+        💕 开始追爱
     </button>
-
-
-    <div class="result" id="result"></div>
-
-
-    <div class="tips">
-        游戏规则：点击随机出现的 🎯<br>
-        30 秒内点击次数越多，得分越高！
-    </div>
 
 </div>
 
 
 <script>
 
-    const arena = document.getElementById("arena");
+const gameArea =
+    document.getElementById("gameArea");
 
-    const target = document.getElementById("target");
+const boy =
+    document.getElementById("boy");
 
-    const scoreElement = document.getElementById("score");
+const girl =
+    document.getElementById("girl");
 
-    const timeElement = document.getElementById("time");
+const loveMessage =
+    document.getElementById("loveMessage");
 
-    const bestElement = document.getElementById("best");
-
-    const startButton = document.getElementById("startBtn");
-
-    const message = document.getElementById("message");
-
-    const result = document.getElementById("result");
-
-
-    let score = 0;
-
-    let timeLeft = 30;
-
-    let timer = null;
-
-    let playing = false;
+const startBtn =
+    document.getElementById("startBtn");
 
 
-    /*
-     * 读取历史最高分
-     */
+let playing = false;
 
-    let bestScore =
-        Number(localStorage.getItem("clickGameBest")) || 0;
+let loveFinished = false;
 
-    bestElement.textContent = bestScore;
+let keys = {};
 
+let boyX = 40;
 
-    /*
-     * 随机移动目标
-     */
+let boyY = 80;
 
-    function moveTarget() {
+let girlX = 400;
 
-        const arenaWidth = arena.clientWidth;
+let girlY = 200;
 
-        const arenaHeight = arena.clientHeight;
-
-        const targetSize = target.offsetWidth;
+const speed = 4;
 
 
-        const maxX =
-            arenaWidth - targetSize;
+/*
+    键盘控制
+*/
 
-        const maxY =
-            arenaHeight - targetSize;
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if([
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
+            "w",
+            "a",
+            "s",
+            "d",
+            "W",
+            "A",
+            "S",
+            "D"
+        ].includes(e.key)){
+
+            e.preventDefault();
+
+            keys[e.key.toLowerCase()] = true;
+        }
+
+    }
+);
 
 
-        const x =
-            Math.random() * maxX;
+document.addEventListener(
+    "keyup",
+    function(e){
+
+        keys[e.key.toLowerCase()] = false;
+
+    }
+);
 
 
-        const y =
-            Math.random() * maxY;
+/*
+    手机按钮
+*/
+
+document
+.querySelectorAll(".control")
+.forEach(button => {
+
+    const key =
+        button.dataset.key;
 
 
-        target.style.left = x + "px";
+    function down(e){
 
-        target.style.top = y + "px";
+        e.preventDefault();
 
-
-        /*
-         * 每次出现时随机一点大小变化
-         */
-
-        const scale =
-            0.85 + Math.random() * 0.3;
-
-
-        target.style.transform =
-            `scale(${scale})`;
-
+        keys[key] = true;
     }
 
 
-    /*
-     * 开始游戏
-     */
+    function up(e){
 
-    function startGame() {
+        e.preventDefault();
 
-        clearInterval(timer);
-
-
-        score = 0;
-
-        timeLeft = 30;
-
-        playing = true;
-
-
-        scoreElement.textContent = score;
-
-        timeElement.textContent = timeLeft;
-
-        result.textContent = "";
-
-
-        startButton.disabled = true;
-
-        startButton.textContent = "游戏进行中…";
-
-
-        message.style.display = "none";
-
-        target.style.display = "block";
-
-
-        moveTarget();
-
-
-        /*
-         * 30秒倒计时
-         */
-
-        timer = setInterval(function () {
-
-            timeLeft--;
-
-            timeElement.textContent =
-                timeLeft;
-
-
-            if (timeLeft <= 0) {
-
-                endGame();
-
-            }
-
-        }, 1000);
-
+        keys[key] = false;
     }
 
 
+    button.addEventListener(
+        "pointerdown",
+        down
+    );
+
+    button.addEventListener(
+        "pointerup",
+        up
+    );
+
+    button.addEventListener(
+        "pointercancel",
+        up
+    );
+
+    button.addEventListener(
+        "pointerleave",
+        up
+    );
+
+});
+
+
+/*
+    美女随机移动
+*/
+
+function moveGirl(){
+
+    if(!playing || loveFinished){
+
+        return;
+    }
+
+
+    const width =
+        gameArea.clientWidth;
+
+    const height =
+        gameArea.clientHeight;
+
+
+    const margin = 80;
+
+
+    girlX =
+        Math.random() *
+        (width - 100) +
+        20;
+
+
+    girlY =
+        Math.random() *
+        (height - 170) +
+        30;
+
+
+    girlX =
+        Math.max(
+            10,
+            Math.min(
+                girlX,
+                width - 80
+            )
+        );
+
+
+    girlY =
+        Math.max(
+            10,
+            Math.min(
+                girlY,
+                height - 130
+            )
+        );
+
+
+    girl.style.left =
+        girlX + "px";
+
+
+    girl.style.top =
+        girlY + "px";
+
+}
+
+
+/*
+    显示爱心
+*/
+
+function createHearts(){
+
+    const rect =
+        girl.getBoundingClientRect();
+
+    const areaRect =
+        gameArea.getBoundingClientRect();
+
+
+    const centerX =
+        rect.left -
+        areaRect.left +
+        35;
+
+
+    const centerY =
+        rect.top -
+        areaRect.top +
+        30;
+
+
+    for(
+        let i = 0;
+        i < 30;
+        i++
+    ){
+
+        const heart =
+            document.createElement("div");
+
+
+        heart.className =
+            "heart";
+
+
+        const hearts = [
+            "❤️",
+            "💕",
+            "💗",
+            "💖",
+            "💘",
+            "💓"
+        ];
+
+
+        heart.textContent =
+            hearts[
+                Math.floor(
+                    Math.random() *
+                    hearts.length
+                )
+            ];
+
+
+        heart.style.left =
+            centerX + "px";
+
+
+        heart.style.top =
+            centerY + "px";
+
+
+        heart.style.setProperty(
+            "--x",
+            (Math.random()*300-150)
+        );
+
+
+        heart.style.animationDelay =
+            (Math.random()*0.8) + "s";
+
+
+        gameArea.appendChild(
+            heart
+        );
+
+
+        setTimeout(
+            () => heart.remove(),
+            3000
+        );
+
+    }
+
+}
+
+
+/*
+    追到若兰
+*/
+
+function catchGirl(){
+
+    loveFinished = true;
+
+    playing = false;
+
+
+    createHearts();
+
+
+    loveMessage.classList.remove(
+        "show"
+    );
+
+
     /*
-     * 点击目标
-     */
+        强制重新触发动画
+    */
 
-    target.addEventListener("click", function () {
+    void loveMessage.offsetWidth;
 
-        if (!playing) {
-            return;
+
+    loveMessage.classList.add(
+        "show"
+    );
+
+
+    startBtn.textContent =
+        "❤️ 再追一次";
+
+
+    setTimeout(
+        () => {
+
+            loveMessage.classList.remove(
+                "show"
+            );
+
+        },
+        3200
+    );
+
+}
+
+
+/*
+    判断距离
+*/
+
+function checkCatch(){
+
+    const dx =
+        boyX - girlX;
+
+    const dy =
+        boyY - girlY;
+
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    if(distance < 65){
+
+        catchGirl();
+
+    }
+
+}
+
+
+/*
+    游戏循环
+*/
+
+function gameLoop(){
+
+    if(playing){
+
+        let dx = 0;
+
+        let dy = 0;
+
+
+        if(
+            keys["arrowup"] ||
+            keys["w"] ||
+            keys["up"]
+        ){
+
+            dy -= speed;
+
         }
 
 
-        score++;
+        if(
+            keys["arrowdown"] ||
+            keys["s"] ||
+            keys["down"]
+        ){
+
+            dy += speed;
+
+        }
 
 
-        scoreElement.textContent =
-            score;
+        if(
+            keys["arrowleft"] ||
+            keys["a"] ||
+            keys["left"]
+        ){
+
+            dx -= speed;
+
+        }
 
 
-        moveTarget();
+        if(
+            keys["arrowright"] ||
+            keys["d"] ||
+            keys["right"]
+        ){
 
-    });
+            dx += speed;
 
-
-    /*
-     * 游戏结束
-     */
-
-    function endGame() {
-
-        clearInterval(timer);
+        }
 
 
-        playing = false;
+        boyX += dx;
 
-
-        target.style.display = "none";
-
-
-        timeElement.textContent = "0";
-
-
-        startButton.disabled = false;
-
-        startButton.textContent =
-            "再玩一次";
-
-
-        message.style.display = "block";
-
-
-        message.textContent =
-            "游戏结束！";
+        boyY += dy;
 
 
         /*
-         * 判断最高分
-         */
+            限制帅哥不能跑出地图
+        */
 
-        if (score > bestScore) {
+        const maxX =
+            gameArea.clientWidth - 70;
 
-            bestScore = score;
+
+        const maxY =
+            gameArea.clientHeight - 110;
 
 
-            localStorage.setItem(
-                "clickGameBest",
-                bestScore
+        boyX =
+            Math.max(
+                0,
+                Math.min(
+                    boyX,
+                    maxX
+                )
             );
 
 
-            bestElement.textContent =
-                bestScore;
+        boyY =
+            Math.max(
+                0,
+                Math.min(
+                    boyY,
+                    maxY
+                )
+            );
 
 
-            result.textContent =
-                "🏆 新纪录！你的得分：" +
-                score;
+        boy.style.left =
+            boyX + "px";
 
-        } else {
 
-            result.textContent =
-                "本次得分：" +
-                score +
-                "　继续挑战最高分：" +
-                bestScore;
+        boy.style.top =
+            boyY + "px";
 
-        }
+
+        checkCatch();
 
     }
 
 
-    /*
-     * 开始按钮
-     */
-
-    startButton.addEventListener(
-        "click",
-        startGame
+    requestAnimationFrame(
+        gameLoop
     );
 
+}
 
-    /*
-     * 防止窗口变化后目标跑出区域
-     */
 
-    window.addEventListener(
-        "resize",
-        function () {
+/*
+    开始游戏
+*/
 
-            if (playing) {
+startBtn.addEventListener(
+    "click",
+    function(){
 
-                moveTarget();
+        playing = true;
 
-            }
+        loveFinished = false;
+
+
+        boyX = 30;
+
+        boyY = 60;
+
+
+        boy.style.left =
+            boyX + "px";
+
+
+        boy.style.top =
+            boyY + "px";
+
+
+        moveGirl();
+
+
+        loveMessage.classList.remove(
+            "show"
+        );
+
+
+        startBtn.textContent =
+            "💗 追逐若兰中…";
+
+    }
+);
+
+
+/*
+    游戏循环启动
+*/
+
+gameLoop();
+
+
+/*
+    定时让若兰换位置
+*/
+
+setInterval(
+    function(){
+
+        if(playing){
+
+            moveGirl();
 
         }
-    );
+
+    },
+    1800
+);
 
 </script>
 
