@@ -2,1272 +2,1383 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>💕 若兰</title>
+<title>💕 若兰 · 爱的追逐</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-body{
-    margin:0;
-    min-height:100vh;
-    overflow:hidden;
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     font-family:
         "Microsoft YaHei",
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
+        "PingFang SC",
+        Arial,
         sans-serif;
+}
 
+body {
     background:
-        radial-gradient(circle at 20% 20%,#ff9a9e 0%,transparent 35%),
-        radial-gradient(circle at 80% 80%,#fad0c4 0%,transparent 35%),
-        linear-gradient(135deg,#ff758c,#ff7eb3);
+        radial-gradient(circle at 20% 20%, #ffd6e7 0, transparent 35%),
+        radial-gradient(circle at 80% 80%, #d7d9ff 0, transparent 35%),
+        linear-gradient(135deg, #f9c5d1, #c8c8ff);
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    color: #4b3040;
 }
 
-.game{
-    width:min(95vw,900px);
-    height:min(92vh,700px);
+/* =========================
+   游戏主界面
+========================= */
 
-    background:rgba(255,255,255,.18);
-
-    border:1px solid rgba(255,255,255,.35);
-
-    border-radius:30px;
-
-    backdrop-filter:blur(18px);
-
-    box-shadow:
-        0 25px 80px rgba(100,0,40,.35);
-
-    padding:20px;
-
-    text-align:center;
+.game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
 }
 
-h1{
-    margin:0;
+/* 顶部标题 */
 
-    color:white;
+.header {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+}
 
-    font-size:42px;
-
+.title {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    color: #ffffff;
     text-shadow:
-        0 4px 15px rgba(100,0,40,.25);
+        0 3px 10px rgba(110, 40, 80, 0.45),
+        0 0 20px rgba(255, 255, 255, 0.7);
 }
 
-.subtitle{
-    color:rgba(255,255,255,.9);
-
-    margin:5px 0 15px;
-
-    font-size:15px;
+.subtitle {
+    margin-top: 4px;
+    color: white;
+    font-size: 15px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
 
-#gameArea{
-    position:relative;
+/* 游戏区域 */
 
-    width:100%;
+.arena {
+    position: absolute;
+    left: 3vw;
+    right: 3vw;
+    top: 105px;
+    bottom: 25px;
 
-    height:calc(100% - 150px);
-
-    min-height:400px;
-
-    border-radius:24px;
-
-    overflow:hidden;
+    border-radius: 30px;
 
     background:
-        linear-gradient(
-            rgba(255,255,255,.12),
-            rgba(255,255,255,.04)
-        );
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.75), transparent 45%),
+        linear-gradient(145deg, rgba(255,255,255,.35), rgba(255,255,255,.12));
 
-    border:2px solid rgba(255,255,255,.3);
-}
+    border: 3px solid rgba(255,255,255,.55);
 
-/* 草地 */
-
-.ground{
-    position:absolute;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:28%;
-
-    background:
-        linear-gradient(
-            rgba(255,255,255,.12),
-            rgba(255,255,255,.02)
-        );
-
-    border-top:2px solid rgba(255,255,255,.15);
-}
-
-/* 人物 */
-
-.character{
-    position:absolute;
-
-    width:70px;
-    height:95px;
-
-    z-index:5;
-
-    transition:
-        left .08s linear,
-        top .08s linear;
-
-    user-select:none;
-
-    pointer-events:none;
-}
-
-/* 头 */
-
-.head{
-    position:absolute;
-
-    width:42px;
-    height:42px;
-
-    border-radius:50%;
-
-    left:14px;
-    top:0;
-
-    background:#ffd1b3;
-
-    border:2px solid rgba(0,0,0,.12);
-}
-
-/* 眼睛 */
-
-.eye{
-    position:absolute;
-
-    width:5px;
-    height:7px;
-
-    border-radius:50%;
-
-    background:#333;
-
-    top:15px;
-}
-
-.eye.left{
-    left:9px;
-}
-
-.eye.right{
-    right:9px;
-}
-
-/* 嘴 */
-
-.mouth{
-    position:absolute;
-
-    width:14px;
-    height:7px;
-
-    border-bottom:2px solid #d85b6a;
-
-    border-radius:50%;
-
-    left:12px;
-    bottom:7px;
-}
-
-/* 身体 */
-
-.body{
-    position:absolute;
-
-    width:48px;
-    height:43px;
-
-    left:11px;
-    top:39px;
-
-    border-radius:18px 18px 12px 12px;
-}
-
-/* 手 */
-
-.arm{
-    position:absolute;
-
-    width:12px;
-    height:35px;
-
-    border-radius:10px;
-
-    top:43px;
-}
-
-.arm.left{
-    left:2px;
-
-    transform:rotate(15deg);
-}
-
-.arm.right{
-    right:2px;
-
-    transform:rotate(-15deg);
-}
-
-/* 腿 */
-
-.leg{
-    position:absolute;
-
-    width:13px;
-    height:25px;
-
-    border-radius:10px;
-
-    top:75px;
-}
-
-.leg.left{
-    left:18px;
-
-    transform:rotate(5deg);
-}
-
-.leg.right{
-    right:18px;
-
-    transform:rotate(-5deg);
-}
-
-/* 帅哥 */
-
-.boy .body,
-.boy .arm,
-.boy .leg{
-    background:#3b82f6;
-}
-
-.boy .head{
     box-shadow:
-        inset 0 8px 0 #333;
+        inset 0 0 40px rgba(255,255,255,.3),
+        0 15px 50px rgba(80,40,90,.2);
+
+    overflow: hidden;
 }
 
-/* 美女 */
+/* 爱心背景 */
 
-.girl .body,
-.girl .arm,
-.girl .leg{
-    background:#f472b6;
+.bg-heart {
+    position: absolute;
+    font-size: 30px;
+    opacity: .18;
+    animation: floatHeart 6s infinite ease-in-out;
 }
 
-.girl .head{
+.h1 { left: 8%; top: 15%; }
+.h2 { left: 80%; top: 18%; animation-delay: 1s; }
+.h3 { left: 20%; top: 70%; animation-delay: 2s; }
+.h4 { left: 75%; top: 72%; animation-delay: 3s; }
+.h5 { left: 48%; top: 45%; animation-delay: 1.5s; }
+
+@keyframes floatHeart {
+    0%,100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-25px) scale(1.15);
+    }
+}
+
+/* =========================
+   人物
+========================= */
+
+.character {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    border: 5px solid white;
+
+    overflow: hidden;
+
     box-shadow:
-        inset 0 8px 0 #54263a;
+        0 8px 25px rgba(60,30,70,.25),
+        0 0 0 4px rgba(255,255,255,.35);
+
+    z-index: 10;
+
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-/* 美女裙子 */
+.character img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
 
-.girl .body{
-    width:55px;
-    height:45px;
+/* 男生 */
 
-    left:8px;
+.boy {
+    left: 10%;
+    top: 65%;
+}
 
-    border-radius:15px 15px 25px 25px;
+/* 女生 */
+
+.girl {
+    left: 70%;
+    top: 25%;
+    width: 105px;
+    height: 105px;
+
+    border-color: #fff1fa;
+
+    box-shadow:
+        0 8px 30px rgba(160,70,130,.35),
+        0 0 0 5px rgba(255,190,225,.4);
 }
 
 /* 名字 */
 
-.name{
-    position:absolute;
+.name {
+    position: absolute;
+    bottom: -29px;
+    left: 50%;
+    transform: translateX(-50%);
 
-    top:-28px;
+    white-space: nowrap;
 
-    width:100px;
+    background: rgba(255,255,255,.9);
+    padding: 4px 12px;
+    border-radius: 20px;
 
-    left:-15px;
+    font-size: 14px;
+    font-weight: bold;
 
-    color:white;
+    box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
 
-    font-size:14px;
+.boy .name {
+    color: #5366a8;
+}
 
-    font-weight:bold;
+.girl .name {
+    color: #c34e91;
+}
+
+/* 男生脚下光圈 */
+
+.boy::after {
+    content: "";
+    position: absolute;
+
+    width: 120px;
+    height: 25px;
+
+    left: 50%;
+    bottom: -17px;
+
+    transform: translateX(-50%);
+
+    background: rgba(110,90,180,.2);
+
+    border-radius: 50%;
+
+    z-index: -1;
+}
+
+/* =========================
+   开始按钮
+========================= */
+
+.start-panel {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 30;
+
+    text-align: center;
+}
+
+.start-button {
+    border: none;
+
+    padding: 17px 42px;
+
+    border-radius: 50px;
+
+    background: linear-gradient(135deg, #ff6fa8, #b66cff);
+
+    color: white;
+
+    font-size: 21px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 30px rgba(150,70,150,.35),
+        inset 0 1px 0 rgba(255,255,255,.5);
+
+    transition: .2s;
+}
+
+.start-button:hover {
+    transform: scale(1.06);
+}
+
+.start-button:active {
+    transform: scale(.96);
+}
+
+.tip {
+    margin-top: 12px;
+
+    color: white;
+
+    font-size: 14px;
+
+    text-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+/* =========================
+   游戏状态
+========================= */
+
+.status {
+    position: absolute;
+
+    top: 125px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 25;
+
+    background: rgba(255,255,255,.85);
+
+    padding: 8px 20px;
+
+    border-radius: 30px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    box-shadow: 0 5px 20px rgba(80,30,80,.12);
+
+    white-space: nowrap;
+}
+
+/* =========================
+   移动控制
+========================= */
+
+.controls {
+    position: absolute;
+
+    bottom: 20px;
+    left: 20px;
+
+    z-index: 30;
+
+    display: none;
+
+    width: 145px;
+    height: 145px;
+
+    opacity: .8;
+}
+
+.control-btn {
+    position: absolute;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.75);
+
+    color: #8d5680;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    box-shadow: 0 4px 15px rgba(80,30,80,.15);
+
+    touch-action: manipulation;
+}
+
+.up {
+    left: 49px;
+    top: 0;
+}
+
+.down {
+    left: 49px;
+    bottom: 0;
+}
+
+.left {
+    left: 0;
+    top: 49px;
+}
+
+.right {
+    right: 0;
+    top: 49px;
+}
+
+/* =========================
+   胜利界面
+========================= */
+
+.win {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(255,210,235,.45);
+
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    z-index: 100;
+
+    text-align: center;
+}
+
+.win.show {
+    display: flex;
+}
+
+.love-title {
+    font-size: clamp(42px, 9vw, 90px);
+
+    font-weight: 900;
+
+    color: #ff3f87;
 
     text-shadow:
-        0 2px 5px rgba(0,0,0,.4);
+        0 5px 15px rgba(170,40,100,.3),
+        0 0 30px rgba(255,255,255,.8);
+
+    animation: loveScale 1.2s infinite alternate;
 }
 
-/* 爱心 */
+.love-text {
+    margin-top: 10px;
 
-.heart{
-    position:absolute;
+    font-size: clamp(25px, 5vw, 48px);
 
-    font-size:28px;
+    color: #9c477e;
 
-    pointer-events:none;
-
-    z-index:20;
-
-    animation:
-        heartFly 2.2s ease-out forwards;
+    font-weight: bold;
 }
 
-@keyframes heartFly{
+.restart {
+    margin-top: 28px;
 
-    0%{
-        opacity:1;
+    padding: 13px 32px;
 
+    border: none;
+
+    border-radius: 30px;
+
+    background: white;
+
+    color: #d64f91;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 20px rgba(80,30,80,.2);
+}
+
+@keyframes loveScale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.08);
+    }
+}
+
+/* =========================
+   爱心粒子
+========================= */
+
+.love-particle {
+    position: absolute;
+
+    pointer-events: none;
+
+    z-index: 90;
+
+    font-size: 28px;
+
+    animation: particle 1.5s forwards ease-out;
+}
+
+@keyframes particle {
+    0% {
+        opacity: 1;
         transform:
             translate(0,0)
             scale(.5)
             rotate(0deg);
     }
 
-    50%{
-        opacity:1;
+    100% {
+        opacity: 0;
 
         transform:
-            translate(
-                calc((var(--x))*1px),
-                -100px
-            )
-            scale(1.3)
-            rotate(15deg);
-    }
-
-    100%{
-        opacity:0;
-
-        transform:
-            translate(
-                calc((var(--x))*1px),
-                -240px
-            )
-            scale(.8)
-            rotate(-20deg);
+            translate(var(--x), var(--y))
+            scale(1.6)
+            rotate(var(--r));
     }
 }
 
-/* 爱你若兰 */
+/* =========================
+   手机适配
+========================= */
 
-.loveMessage{
-    position:absolute;
+@media (max-width: 700px) {
 
-    left:50%;
-    top:45%;
-
-    transform:
-        translate(-50%,-50%)
-        scale(0);
-
-    z-index:30;
-
-    color:white;
-
-    font-size:clamp(35px,8vw,72px);
-
-    font-weight:900;
-
-    white-space:nowrap;
-
-    text-shadow:
-        0 5px 20px rgba(160,0,50,.6),
-        0 0 25px rgba(255,255,255,.7);
-
-    opacity:0;
-}
-
-.loveMessage.show{
-    animation:
-        loveShow 3s ease forwards;
-}
-
-@keyframes loveShow{
-
-    0%{
-        opacity:0;
-
-        transform:
-            translate(-50%,-50%)
-            scale(.2);
+    .title {
+        font-size: 30px;
+        letter-spacing: 3px;
     }
 
-    25%{
-        opacity:1;
-
-        transform:
-            translate(-50%,-50%)
-            scale(1.2);
+    .subtitle {
+        font-size: 12px;
     }
 
-    45%{
-        transform:
-            translate(-50%,-50%)
-            scale(1);
+    .arena {
+        top: 90px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        border-radius: 22px;
     }
 
-    85%{
-        opacity:1;
+    .character {
+        width: 76px;
+        height: 76px;
+        border-width: 4px;
     }
 
-    100%{
-        opacity:0;
+    .girl {
+        width: 80px;
+        height: 80px;
+    }
 
-        transform:
-            translate(-50%,-50%)
-            scale(1.1);
+    .name {
+        bottom: -25px;
+        font-size: 12px;
+        padding: 3px 9px;
+    }
+
+    .status {
+        top: 102px;
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+
+    .controls {
+        display: block;
+    }
+
+    .start-button {
+        padding: 14px 32px;
+        font-size: 18px;
     }
 }
 
-/* 开始按钮 */
+/* 小屏幕 */
 
-#startBtn{
-    margin-top:15px;
+@media (max-height: 600px) {
 
-    padding:13px 35px;
-
-    border:0;
-
-    border-radius:30px;
-
-    background:white;
-
-    color:#ec4899;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 8px 20px rgba(0,0,0,.2);
-}
-
-#startBtn:active{
-    transform:scale(.96);
-}
-
-/* 手机方向键 */
-
-.controls{
-    position:absolute;
-
-    left:50%;
-
-    bottom:15px;
-
-    transform:translateX(-50%);
-
-    width:170px;
-
-    height:125px;
-
-    z-index:50;
-
-    display:none;
-}
-
-.control{
-    position:absolute;
-
-    width:52px;
-    height:52px;
-
-    border:0;
-
-    border-radius:15px;
-
-    background:rgba(255,255,255,.8);
-
-    color:#ec4899;
-
-    font-size:25px;
-
-    font-weight:bold;
-
-    box-shadow:
-        0 5px 15px rgba(0,0,0,.2);
-
-    touch-action:none;
-}
-
-.up{
-    left:59px;
-    top:0;
-}
-
-.down{
-    left:59px;
-    bottom:0;
-}
-
-.left{
-    left:0;
-    top:59px;
-}
-
-.right{
-    right:0;
-    top:59px;
-}
-
-.tip{
-    position:absolute;
-
-    left:50%;
-
-    bottom:15px;
-
-    transform:translateX(-50%);
-
-    color:rgba(255,255,255,.7);
-
-    font-size:13px;
-
-    z-index:2;
-}
-
-@media(max-width:700px){
-
-    .game{
-        width:96vw;
-        height:94vh;
-
-        padding:12px;
-
-        border-radius:22px;
+    .arena {
+        top: 75px;
     }
 
-    h1{
-        font-size:32px;
+    .header {
+        top: 8px;
     }
 
-    .subtitle{
-        margin-bottom:8px;
+    .title {
+        font-size: 24px;
     }
 
-    #gameArea{
-        height:calc(100% - 105px);
-
-        min-height:420px;
-    }
-
-    .controls{
-        display:block;
-    }
-
-    .tip{
-        display:none;
-    }
-
-    #startBtn{
-        margin-top:8px;
+    .status {
+        top: 82px;
     }
 }
 
 </style>
 </head>
 
-
 <body>
 
 <div class="game">
 
-    <h1>💕 若兰</h1>
+    <!-- 顶部 -->
 
-    <div class="subtitle">
-        爱，就要勇敢追上她 ❤️
+    <div class="header">
+        <div class="title">💕 若兰</div>
+        <div class="subtitle">有一种喜欢，就是一直追着你</div>
     </div>
 
+    <!-- 游戏场地 -->
 
-    <div id="gameArea">
+    <div class="arena" id="arena">
 
-        <div class="ground"></div>
+        <!-- 背景爱心 -->
 
+        <div class="bg-heart h1">💕</div>
+        <div class="bg-heart h2">💗</div>
+        <div class="bg-heart h3">💖</div>
+        <div class="bg-heart h4">💕</div>
+        <div class="bg-heart h5">💞</div>
 
-        <!-- 帅哥 -->
+        <!-- 女生 -->
 
-        <div
-            id="boy"
-            class="character boy"
-            style="left:40px;top:80px;"
-        >
-
-            <div class="name">
-                帅哥
-            </div>
-
-            <div class="head">
-
-                <div class="eye left"></div>
-
-                <div class="eye right"></div>
-
-                <div class="mouth"></div>
-
-            </div>
-
-            <div class="body"></div>
-
-            <div class="arm left"></div>
-
-            <div class="arm right"></div>
-
-            <div class="leg left"></div>
-
-            <div class="leg right"></div>
-
+        <div class="character girl" id="girl">
+            <img src="girl.jpg" alt="若兰">
+            <div class="name">若兰 💕</div>
         </div>
 
+        <!-- 男生 -->
 
-        <!-- 美女 -->
-
-        <div
-            id="girl"
-            class="character girl"
-            style="left:400px;top:200px;"
-        >
-
-            <div class="name">
-                若兰 ❤️
-            </div>
-
-            <div class="head">
-
-                <div class="eye left"></div>
-
-                <div class="eye right"></div>
-
-                <div class="mouth"></div>
-
-            </div>
-
-            <div class="body"></div>
-
-            <div class="arm left"></div>
-
-            <div class="arm right"></div>
-
-            <div class="leg left"></div>
-
-            <div class="leg right"></div>
-
+        <div class="character boy" id="boy">
+            <img src="boy.jpg" alt="男主">
+            <div class="name">我 ❤️</div>
         </div>
 
+    </div>
 
-        <!-- 爱心文字 -->
+    <!-- 状态 -->
 
-        <div
-            id="loveMessage"
-            class="loveMessage"
-        >
-            ❤️ 爱你若兰 ❤️
-        </div>
+    <div class="status" id="status">
+        点击「开始游戏」
+    </div>
 
+    <!-- 开始 -->
 
-        <!-- 手机控制 -->
+    <div class="start-panel" id="startPanel">
 
-        <div class="controls">
-
-            <button
-                class="control up"
-                data-key="up"
-            >
-                ▲
-            </button>
-
-            <button
-                class="control down"
-                data-key="down"
-            >
-                ▼
-            </button>
-
-            <button
-                class="control left"
-                data-key="left"
-            >
-                ◀
-            </button>
-
-            <button
-                class="control right"
-                data-key="right"
-            >
-                ▶
-            </button>
-
-        </div>
-
+        <button class="start-button" id="startButton">
+            💕 开始追若兰
+        </button>
 
         <div class="tip">
-            电脑：使用 WASD 或方向键追逐若兰
+            追到她，就告诉她你的心意 ❤️
         </div>
 
     </div>
 
+    <!-- 手机方向键 -->
 
-    <button id="startBtn">
-        💕 开始追爱
-    </button>
+    <div class="controls">
+
+        <button class="control-btn up" data-dir="up">▲</button>
+
+        <button class="control-btn down" data-dir="down">▼</button>
+
+        <button class="control-btn left" data-dir="left">◀</button>
+
+        <button class="control-btn right" data-dir="right">▶</button>
+
+    </div>
+
+    <!-- 胜利 -->
+
+    <div class="win" id="win">
+
+        <div class="love-title">
+            ❤️ 爱你，若兰 ❤️
+        </div>
+
+        <div class="love-text">
+            终于追到你了 💕
+        </div>
+
+        <button class="restart" id="restart">
+            再追一次
+        </button>
+
+    </div>
 
 </div>
 
 
 <script>
 
-const gameArea =
-    document.getElementById("gameArea");
+/* ==========================================
+   若兰 · 爱的追逐
+========================================== */
 
-const boy =
-    document.getElementById("boy");
+const arena = document.getElementById("arena");
 
-const girl =
-    document.getElementById("girl");
+const boy = document.getElementById("boy");
 
-const loveMessage =
-    document.getElementById("loveMessage");
+const girl = document.getElementById("girl");
 
-const startBtn =
-    document.getElementById("startBtn");
+const startButton = document.getElementById("startButton");
+
+const startPanel = document.getElementById("startPanel");
+
+const status = document.getElementById("status");
+
+const win = document.getElementById("win");
+
+const restart = document.getElementById("restart");
 
 
 let playing = false;
 
-let loveFinished = false;
+let gameTimer = null;
 
-let keys = {};
+let girlTimer = null;
 
-let boyX = 40;
+let boyX = 0;
 
-let boyY = 80;
+let boyY = 0;
 
-let girlX = 400;
+let girlX = 0;
 
-let girlY = 200;
+let girlY = 0;
 
-const speed = 4;
+let boySpeed = 4;
+
+let girlSpeed = 1.5;
 
 
-/*
-    键盘控制
-*/
+/* ==========================================
+   获取人物尺寸
+========================================== */
 
-document.addEventListener(
-    "keydown",
-    function(e){
+function getBoySize() {
 
-        if([
-            "ArrowUp",
-            "ArrowDown",
-            "ArrowLeft",
-            "ArrowRight",
-            "w",
-            "a",
-            "s",
-            "d",
-            "W",
-            "A",
-            "S",
-            "D"
-        ].includes(e.key)){
+    return {
+        width: boy.offsetWidth,
+        height: boy.offsetHeight
+    };
 
-            e.preventDefault();
+}
 
-            keys[e.key.toLowerCase()] = true;
+function getGirlSize() {
+
+    return {
+        width: girl.offsetWidth,
+        height: girl.offsetHeight
+    };
+
+}
+
+
+/* ==========================================
+   设置人物位置
+========================================== */
+
+function setPosition(element, x, y) {
+
+    element.style.left = x + "px";
+
+    element.style.top = y + "px";
+
+}
+
+
+/* ==========================================
+   随机位置
+========================================== */
+
+function randomGirlPosition() {
+
+    const arenaWidth = arena.clientWidth;
+
+    const arenaHeight = arena.clientHeight;
+
+    const size = getGirlSize();
+
+    const margin = 20;
+
+    girlX =
+        margin +
+        Math.random() *
+        Math.max(
+            1,
+            arenaWidth - size.width - margin * 2
+        );
+
+    girlY =
+        margin +
+        Math.random() *
+        Math.max(
+            1,
+            arenaHeight - size.height - margin * 2
+        );
+
+    setPosition(girl, girlX, girlY);
+
+}
+
+
+/* ==========================================
+   初始化人物
+========================================== */
+
+function resetCharacters() {
+
+    const arenaWidth = arena.clientWidth;
+
+    const arenaHeight = arena.clientHeight;
+
+    const b = getBoySize();
+
+    boyX = arenaWidth * 0.15;
+
+    boyY = arenaHeight * 0.65;
+
+    boyX = Math.max(10, Math.min(boyX, arenaWidth - b.width - 10));
+
+    boyY = Math.max(10, Math.min(boyY, arenaHeight - b.height - 10));
+
+    setPosition(boy, boyX, boyY);
+
+    randomGirlPosition();
+
+}
+
+
+/* ==========================================
+   让若兰移动
+========================================== */
+
+function moveGirl() {
+
+    if (!playing) return;
+
+    const arenaWidth = arena.clientWidth;
+
+    const arenaHeight = arena.clientHeight;
+
+    const g = getGirlSize();
+
+    const angle = Math.random() * Math.PI * 2;
+
+    const distance = 80 + Math.random() * 130;
+
+    let newX = girlX + Math.cos(angle) * distance;
+
+    let newY = girlY + Math.sin(angle) * distance;
+
+    newX = Math.max(
+        10,
+        Math.min(
+            newX,
+            arenaWidth - g.width - 10
+        )
+    );
+
+    newY = Math.max(
+        10,
+        Math.min(
+            newY,
+            arenaHeight - g.height - 10
+        )
+    );
+
+    const startX = girlX;
+
+    const startY = girlY;
+
+    const targetX = newX;
+
+    const targetY = newY;
+
+    const startTime = performance.now();
+
+    const duration = 900;
+
+    function animate(now) {
+
+        if (!playing) return;
+
+        const progress =
+            Math.min(
+                1,
+                (now - startTime) / duration
+            );
+
+        girlX =
+            startX +
+            (targetX - startX) *
+            progress;
+
+        girlY =
+            startY +
+            (targetY - startY) *
+            progress;
+
+        setPosition(girl, girlX, girlY);
+
+        if (progress < 1) {
+
+            requestAnimationFrame(animate);
+
         }
 
     }
-);
+
+    requestAnimationFrame(animate);
+
+}
 
 
-document.addEventListener(
-    "keyup",
-    function(e){
+/* ==========================================
+   碰撞检测
+========================================== */
 
-        keys[e.key.toLowerCase()] = false;
+function checkCollision() {
+
+    const boyCenterX =
+        boyX + boy.offsetWidth / 2;
+
+    const boyCenterY =
+        boyY + boy.offsetHeight / 2;
+
+    const girlCenterX =
+        girlX + girl.offsetWidth / 2;
+
+    const girlCenterY =
+        girlY + girl.offsetHeight / 2;
+
+    const dx =
+        boyCenterX - girlCenterX;
+
+    const dy =
+        boyCenterY - girlCenterY;
+
+    const distance =
+        Math.sqrt(dx * dx + dy * dy);
+
+    return distance < 75;
+
+}
+
+
+/* ==========================================
+   移动男生
+========================================== */
+
+function moveBoy(dx, dy) {
+
+    if (!playing) return;
+
+    const arenaWidth = arena.clientWidth;
+
+    const arenaHeight = arena.clientHeight;
+
+    const b = getBoySize();
+
+    boyX += dx;
+
+    boyY += dy;
+
+    boyX =
+        Math.max(
+            0,
+            Math.min(
+                boyX,
+                arenaWidth - b.width
+            )
+        );
+
+    boyY =
+        Math.max(
+            0,
+            Math.min(
+                boyY,
+                arenaHeight - b.height
+            )
+        );
+
+    setPosition(boy, boyX, boyY);
+
+    if (checkCollision()) {
+
+        winGame();
 
     }
-);
+
+}
 
 
-/*
-    手机按钮
-*/
+/* ==========================================
+   键盘控制
+========================================== */
 
-document
-.querySelectorAll(".control")
-.forEach(button => {
+const keys = {};
 
-    const key =
-        button.dataset.key;
+document.addEventListener("keydown", function(e) {
 
+    if (!playing) return;
 
-    function down(e){
+    keys[e.key.toLowerCase()] = true;
+
+    if (
+        [
+            "arrowup",
+            "arrowdown",
+            "arrowleft",
+            "arrowright"
+        ].includes(e.key.toLowerCase())
+    ) {
 
         e.preventDefault();
 
-        keys[key] = true;
     }
 
+});
 
-    function up(e){
+
+document.addEventListener("keyup", function(e) {
+
+    keys[e.key.toLowerCase()] = false;
+
+});
+
+
+function keyboardLoop() {
+
+    if (!playing) return;
+
+    let dx = 0;
+
+    let dy = 0;
+
+    if (
+        keys["arrowup"] ||
+        keys["w"]
+    ) {
+
+        dy -= boySpeed;
+
+    }
+
+    if (
+        keys["arrowdown"] ||
+        keys["s"]
+    ) {
+
+        dy += boySpeed;
+
+    }
+
+    if (
+        keys["arrowleft"] ||
+        keys["a"]
+    ) {
+
+        dx -= boySpeed;
+
+    }
+
+    if (
+        keys["arrowright"] ||
+        keys["d"]
+    ) {
+
+        dx += boySpeed;
+
+    }
+
+    if (dx !== 0 || dy !== 0) {
+
+        moveBoy(dx, dy);
+
+    }
+
+    requestAnimationFrame(keyboardLoop);
+
+}
+
+
+/* ==========================================
+   手机按钮
+========================================== */
+
+document.querySelectorAll(".control-btn")
+.forEach(function(button) {
+
+    const direction =
+        button.dataset.dir;
+
+    function press(e) {
 
         e.preventDefault();
 
-        keys[key] = false;
+        if (!playing) return;
+
+        const distance = boySpeed * 2;
+
+        if (direction === "up") {
+
+            moveBoy(0, -distance);
+
+        }
+
+        if (direction === "down") {
+
+            moveBoy(0, distance);
+
+        }
+
+        if (direction === "left") {
+
+            moveBoy(-distance, 0);
+
+        }
+
+        if (direction === "right") {
+
+            moveBoy(distance, 0);
+
+        }
+
     }
 
-
     button.addEventListener(
-        "pointerdown",
-        down
+        "touchstart",
+        press,
+        { passive: false }
     );
 
     button.addEventListener(
-        "pointerup",
-        up
-    );
-
-    button.addEventListener(
-        "pointercancel",
-        up
-    );
-
-    button.addEventListener(
-        "pointerleave",
-        up
+        "mousedown",
+        press
     );
 
 });
 
 
-/*
-    美女随机移动
-*/
+/* ==========================================
+   创建爱心
+========================================== */
 
-function moveGirl(){
+function createLove(x, y) {
 
-    if(!playing || loveFinished){
+    const heart =
+        document.createElement("div");
 
-        return;
-    }
+    heart.className =
+        "love-particle";
 
+    const hearts = [
+        "❤️",
+        "💕",
+        "💗",
+        "💖",
+        "💘",
+        "💝",
+        "💞"
+    ];
 
-    const width =
-        gameArea.clientWidth;
-
-    const height =
-        gameArea.clientHeight;
-
-
-    const margin = 80;
-
-
-    girlX =
-        Math.random() *
-        (width - 100) +
-        20;
-
-
-    girlY =
-        Math.random() *
-        (height - 170) +
-        30;
-
-
-    girlX =
-        Math.max(
-            10,
-            Math.min(
-                girlX,
-                width - 80
+    heart.textContent =
+        hearts[
+            Math.floor(
+                Math.random() *
+                hearts.length
             )
-        );
-
-
-    girlY =
-        Math.max(
-            10,
-            Math.min(
-                girlY,
-                height - 130
-            )
-        );
-
-
-    girl.style.left =
-        girlX + "px";
-
-
-    girl.style.top =
-        girlY + "px";
-
-}
-
-
-/*
-    显示爱心
-*/
-
-function createHearts(){
-
-    const rect =
-        girl.getBoundingClientRect();
-
-    const areaRect =
-        gameArea.getBoundingClientRect();
-
-
-    const centerX =
-        rect.left -
-        areaRect.left +
-        35;
-
-
-    const centerY =
-        rect.top -
-        areaRect.top +
-        30;
-
-
-    for(
-        let i = 0;
-        i < 30;
-        i++
-    ){
-
-        const heart =
-            document.createElement("div");
-
-
-        heart.className =
-            "heart";
-
-
-        const hearts = [
-            "❤️",
-            "💕",
-            "💗",
-            "💖",
-            "💘",
-            "💓"
         ];
 
+    heart.style.left =
+        x + "px";
 
-        heart.textContent =
-            hearts[
-                Math.floor(
-                    Math.random() *
-                    hearts.length
-                )
-            ];
+    heart.style.top =
+        y + "px";
+
+    heart.style.setProperty(
+        "--x",
+        ((Math.random() - .5) * 350) + "px"
+    );
+
+    heart.style.setProperty(
+        "--y",
+        ((Math.random() - .5) * 300) + "px"
+    );
+
+    heart.style.setProperty(
+        "--r",
+        ((Math.random() - .5) * 180) + "deg"
+    );
+
+    heart.style.fontSize =
+        (20 + Math.random() * 35) + "px";
+
+    document.querySelector(".game")
+        .appendChild(heart);
+
+    setTimeout(function() {
+
+        heart.remove();
+
+    }, 1600);
+
+}
 
 
-        heart.style.left =
-            centerX + "px";
+/* ==========================================
+   爱心爆发
+========================================== */
 
+function loveExplosion() {
 
-        heart.style.top =
-            centerY + "px";
+    const centerX =
+        arena.offsetLeft +
+        girlX +
+        girl.offsetWidth / 2;
 
+    const centerY =
+        arena.offsetTop +
+        girlY +
+        girl.offsetHeight / 2;
 
-        heart.style.setProperty(
-            "--x",
-            (Math.random()*300-150)
-        );
+    for (
+        let i = 0;
+        i < 70;
+        i++
+    ) {
 
+        setTimeout(function() {
 
-        heart.style.animationDelay =
-            (Math.random()*0.8) + "s";
+            createLove(
+                centerX,
+                centerY
+            );
 
-
-        gameArea.appendChild(
-            heart
-        );
-
-
-        setTimeout(
-            () => heart.remove(),
-            3000
-        );
+        }, i * 18);
 
     }
 
 }
 
 
-/*
-    追到若兰
-*/
+/* ==========================================
+   游戏胜利
+========================================== */
 
-function catchGirl(){
+function winGame() {
 
-    loveFinished = true;
+    if (!playing) return;
 
     playing = false;
 
+    clearInterval(gameTimer);
 
-    createHearts();
+    clearInterval(girlTimer);
 
+    status.textContent =
+        "💕 追到了！";
 
-    loveMessage.classList.remove(
-        "show"
-    );
+    loveExplosion();
 
+    setTimeout(function() {
 
-    /*
-        强制重新触发动画
-    */
+        win.classList.add("show");
 
-    void loveMessage.offsetWidth;
-
-
-    loveMessage.classList.add(
-        "show"
-    );
-
-
-    startBtn.textContent =
-        "❤️ 再追一次";
-
-
-    setTimeout(
-        () => {
-
-            loveMessage.classList.remove(
-                "show"
-            );
-
-        },
-        3200
-    );
+    }, 500);
 
 }
 
 
-/*
-    判断距离
-*/
+/* ==========================================
+   开始游戏
+========================================== */
 
-function checkCatch(){
+function startGame() {
 
-    const dx =
-        boyX - girlX;
+    playing = true;
 
-    const dy =
-        boyY - girlY;
+    win.classList.remove("show");
 
+    startPanel.style.display =
+        "none";
 
-    const distance =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
+    status.textContent =
+        "追上若兰！❤️";
+
+    resetCharacters();
+
+    clearInterval(girlTimer);
+
+    girlTimer =
+        setInterval(
+            moveGirl,
+            1300
         );
 
+    clearInterval(gameTimer);
 
-    if(distance < 65){
+    let seconds = 30;
 
-        catchGirl();
+    gameTimer =
+        setInterval(function() {
 
-    }
+            if (!playing) {
 
-}
+                clearInterval(gameTimer);
 
+                return;
 
-/*
-    游戏循环
-*/
+            }
 
-function gameLoop(){
+            seconds--;
 
-    if(playing){
+            status.textContent =
+                "追若兰中 ❤️  " +
+                seconds +
+                " 秒";
 
-        let dx = 0;
+            if (seconds <= 0) {
 
-        let dy = 0;
+                clearInterval(gameTimer);
 
+                playing = false;
 
-        if(
-            keys["arrowup"] ||
-            keys["w"] ||
-            keys["up"]
-        ){
+                status.textContent =
+                    "差一点就追到了，再试一次吧 ❤️";
 
-            dy -= speed;
+                startPanel.style.display =
+                    "block";
 
-        }
+                startButton.textContent =
+                    "💕 再追一次";
 
+            }
 
-        if(
-            keys["arrowdown"] ||
-            keys["s"] ||
-            keys["down"]
-        ){
+        }, 1000);
 
-            dy += speed;
-
-        }
-
-
-        if(
-            keys["arrowleft"] ||
-            keys["a"] ||
-            keys["left"]
-        ){
-
-            dx -= speed;
-
-        }
-
-
-        if(
-            keys["arrowright"] ||
-            keys["d"] ||
-            keys["right"]
-        ){
-
-            dx += speed;
-
-        }
-
-
-        boyX += dx;
-
-        boyY += dy;
-
-
-        /*
-            限制帅哥不能跑出地图
-        */
-
-        const maxX =
-            gameArea.clientWidth - 70;
-
-
-        const maxY =
-            gameArea.clientHeight - 110;
-
-
-        boyX =
-            Math.max(
-                0,
-                Math.min(
-                    boyX,
-                    maxX
-                )
-            );
-
-
-        boyY =
-            Math.max(
-                0,
-                Math.min(
-                    boyY,
-                    maxY
-                )
-            );
-
-
-        boy.style.left =
-            boyX + "px";
-
-
-        boy.style.top =
-            boyY + "px";
-
-
-        checkCatch();
-
-    }
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
+    keyboardLoop();
 
 }
 
 
-/*
-    开始游戏
-*/
+/* ==========================================
+   开始按钮
+========================================== */
 
-startBtn.addEventListener(
+startButton.addEventListener(
     "click",
-    function(){
-
-        playing = true;
-
-        loveFinished = false;
+    startGame
+);
 
 
-        boyX = 30;
+/* ==========================================
+   重新开始
+========================================== */
 
-        boyY = 60;
+restart.addEventListener(
+    "click",
+    function() {
 
+        win.classList.remove("show");
 
-        boy.style.left =
-            boyX + "px";
-
-
-        boy.style.top =
-            boyY + "px";
-
-
-        moveGirl();
-
-
-        loveMessage.classList.remove(
-            "show"
-        );
-
-
-        startBtn.textContent =
-            "💗 追逐若兰中…";
+        startGame();
 
     }
 );
 
 
-/*
-    游戏循环启动
-*/
+/* ==========================================
+   窗口大小变化
+========================================== */
 
-gameLoop();
+window.addEventListener(
+    "resize",
+    function() {
 
+        if (!playing) {
 
-/*
-    定时让若兰换位置
-*/
-
-setInterval(
-    function(){
-
-        if(playing){
-
-            moveGirl();
+            resetCharacters();
 
         }
 
-    },
-    1800
+    }
+);
+
+
+/* ==========================================
+   初始位置
+========================================== */
+
+window.addEventListener(
+    "load",
+    function() {
+
+        resetCharacters();
+
+    }
 );
 
 </script>
