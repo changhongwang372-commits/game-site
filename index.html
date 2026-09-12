@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>⚡ 极速点击 - 30秒挑战</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Microsoft YaHei",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(circle at top left, #4f46e5, transparent 40%),
+                radial-gradient(circle at bottom right, #06b6d4, transparent 40%),
+                #111827;
+
+            color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .game-card {
+            width: 100%;
+            max-width: 600px;
+
+            padding: 30px;
+
+            border-radius: 28px;
+
+            background: rgba(255, 255, 255, 0.12);
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.35);
+
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+
+            font-size: 38px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+
+            color: rgba(255, 255, 255, 0.75);
+
+            font-size: 15px;
+        }
+
+        .stats {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr 1fr;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .stat {
+            background: rgba(0, 0, 0, 0.18);
+
+            border-radius: 16px;
+
+            padding: 14px 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .stat-value {
+            margin-top: 5px;
+
+            font-size: 28px;
+
+            font-weight: 800;
+        }
+
+        #arena {
+            position: relative;
+
+            width: 100%;
+
+            height: 320px;
+
+            margin-top: 22px;
+
+            border-radius: 20px;
+
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+
+            background: rgba(0, 0, 0, 0.12);
+
+            overflow: hidden;
+
+            user-select: none;
+
+            touch-action: manipulation;
+        }
+
+        #message {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            width: 90%;
+
+            color: rgba(255, 255, 255, 0.75);
+
+            font-size: 17px;
+
+            pointer-events: none;
+        }
+
+        #target {
+            position: absolute;
+
+            width: 70px;
+            height: 70px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    #ffffff,
+                    #facc15 25%,
+                    #f97316 65%,
+                    #ef4444
+                );
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.35),
+                0 0 25px rgba(250, 204, 21, 0.45);
+
+            cursor: pointer;
+
+            display: none;
+
+            transform: scale(1);
+
+            transition:
+                left 0.08s,
+                top 0.08s,
+                transform 0.08s;
+        }
+
+        #target:hover {
+            transform: scale(1.08);
+        }
+
+        #target:active {
+            transform: scale(0.9);
+        }
+
+        #startBtn {
+            margin-top: 22px;
+
+            width: 100%;
+
+            padding: 15px 20px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background: white;
+
+            color: #111827;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s,
+                box-shadow 0.15s;
+        }
+
+        #startBtn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        #startBtn:active {
+            transform: translateY(0);
+        }
+
+        #startBtn:disabled {
+            opacity: 0.65;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+        .tips {
+            margin-top: 18px;
+
+            color: rgba(255, 255, 255, 0.55);
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        .result {
+            margin-top: 12px;
+
+            min-height: 25px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .game-card {
+                padding: 22px 16px;
+
+                border-radius: 22px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            #arena {
+                height: 360px;
+            }
+
+            #target {
+                width: 64px;
+                height: 64px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game-card">
+
+    <h1>⚡ 极速点击</h1>
+
+    <div class="subtitle">
+        30 秒内尽可能多地点中目标！
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-label">得分</div>
+            <div class="stat-value" id="score">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">剩余时间</div>
+            <div class="stat-value" id="time">30</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">最高分</div>
+            <div class="stat-value" id="best">0</div>
+        </div>
+
+    </div>
+
+
+    <div id="arena">
+
+        <div id="message">
+            点击下面的按钮开始游戏
+        </div>
+
+        <button id="target">
+            🎯
+        </button>
+
+    </div>
+
+
+    <button id="startBtn">
+        开始游戏
+    </button>
+
+
+    <div class="result" id="result"></div>
+
+
+    <div class="tips">
+        游戏规则：点击随机出现的 🎯<br>
+        30 秒内点击次数越多，得分越高！
+    </div>
+
+</div>
+
+
+<script>
+
+    const arena = document.getElementById("arena");
+
+    const target = document.getElementById("target");
+
+    const scoreElement = document.getElementById("score");
+
+    const timeElement = document.getElementById("time");
+
+    const bestElement = document.getElementById("best");
+
+    const startButton = document.getElementById("startBtn");
+
+    const message = document.getElementById("message");
+
+    const result = document.getElementById("result");
+
+
+    let score = 0;
+
+    let timeLeft = 30;
+
+    let timer = null;
+
+    let playing = false;
+
+
+    /*
+     * 读取历史最高分
+     */
+
+    let bestScore =
+        Number(localStorage.getItem("clickGameBest")) || 0;
+
+    bestElement.textContent = bestScore;
+
+
+    /*
+     * 随机移动目标
+     */
+
+    function moveTarget() {
+
+        const arenaWidth = arena.clientWidth;
+
+        const arenaHeight = arena.clientHeight;
+
+        const targetSize = target.offsetWidth;
+
+
+        const maxX =
+            arenaWidth - targetSize;
+
+        const maxY =
+            arenaHeight - targetSize;
+
+
+        const x =
+            Math.random() * maxX;
+
+
+        const y =
+            Math.random() * maxY;
+
+
+        target.style.left = x + "px";
+
+        target.style.top = y + "px";
+
+
+        /*
+         * 每次出现时随机一点大小变化
+         */
+
+        const scale =
+            0.85 + Math.random() * 0.3;
+
+
+        target.style.transform =
+            `scale(${scale})`;
+
+    }
+
+
+    /*
+     * 开始游戏
+     */
+
+    function startGame() {
+
+        clearInterval(timer);
+
+
+        score = 0;
+
+        timeLeft = 30;
+
+        playing = true;
+
+
+        scoreElement.textContent = score;
+
+        timeElement.textContent = timeLeft;
+
+        result.textContent = "";
+
+
+        startButton.disabled = true;
+
+        startButton.textContent = "游戏进行中…";
+
+
+        message.style.display = "none";
+
+        target.style.display = "block";
+
+
+        moveTarget();
+
+
+        /*
+         * 30秒倒计时
+         */
+
+        timer = setInterval(function () {
+
+            timeLeft--;
+
+            timeElement.textContent =
+                timeLeft;
+
+
+            if (timeLeft <= 0) {
+
+                endGame();
+
+            }
+
+        }, 1000);
+
+    }
+
+
+    /*
+     * 点击目标
+     */
+
+    target.addEventListener("click", function () {
+
+        if (!playing) {
+            return;
+        }
+
+
+        score++;
+
+
+        scoreElement.textContent =
+            score;
+
+
+        moveTarget();
+
+    });
+
+
+    /*
+     * 游戏结束
+     */
+
+    function endGame() {
+
+        clearInterval(timer);
+
+
+        playing = false;
+
+
+        target.style.display = "none";
+
+
+        timeElement.textContent = "0";
+
+
+        startButton.disabled = false;
+
+        startButton.textContent =
+            "再玩一次";
+
+
+        message.style.display = "block";
+
+
+        message.textContent =
+            "游戏结束！";
+
+
+        /*
+         * 判断最高分
+         */
+
+        if (score > bestScore) {
+
+            bestScore = score;
+
+
+            localStorage.setItem(
+                "clickGameBest",
+                bestScore
+            );
+
+
+            bestElement.textContent =
+                bestScore;
+
+
+            result.textContent =
+                "🏆 新纪录！你的得分：" +
+                score;
+
+        } else {
+
+            result.textContent =
+                "本次得分：" +
+                score +
+                "　继续挑战最高分：" +
+                bestScore;
+
+        }
+
+    }
+
+
+    /*
+     * 开始按钮
+     */
+
+    startButton.addEventListener(
+        "click",
+        startGame
+    );
+
+
+    /*
+     * 防止窗口变化后目标跑出区域
+     */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (playing) {
+
+                moveTarget();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
